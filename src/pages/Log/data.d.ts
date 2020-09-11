@@ -17,9 +17,9 @@ export interface TableListItem {
 }
 
 export interface TableListPagination {
-  total: number;
-  pageSize: number;
-  current: number;
+  total?: undefined|number;
+  pageSize: undefined|number;
+  current: undefined|number;
 }
 
 export interface TableListData {

@@ -135,7 +135,7 @@ const Login: React.FC<{}> = () => {
               <Password
                 name="password"
                 defaultValue={password}
-                placeholder="密码: ant.design"
+                placeholder="密码"
                 rules={[
                   {
                     required: true,
