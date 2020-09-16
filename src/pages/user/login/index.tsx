@@ -69,7 +69,6 @@ const Login: React.FC<{}> = () => {
     try {
       // 登录
       const msg = await fakeAccountLogin({ ...values, type });
-      debugger
       if(msg.error?.errCode){
         message.error(msg.error.errMsg);
       } else {

@@ -6,6 +6,7 @@ import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import log from './en-US/log';
 import common from './en-US/common'
+import detail from './en-US/detail'
 
 export default {
   'navBar.lang': 'Languages',
@@ -22,5 +23,6 @@ export default {
   ...pwa,
   ...component,
   ...log,
-  ...common
+  ...common,
+  ...detail
 };

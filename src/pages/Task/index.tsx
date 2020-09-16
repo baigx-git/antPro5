@@ -88,7 +88,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
           handleCheck(false)
           handleModalVisible(false)
           message.success("创建task成功")
-          actionRef.current?.reloadAndRest();
+          actionRef.current?.reloadAndRest()
         }
       }
     });
@@ -116,6 +116,8 @@ const TableList: React.FC<BasicListProps> = (props) => {
       await resetPassword({...values,ids})
       handlePwCheck(false);
       message.success('重置成功！');
+      handlePwVisible(false);
+      actionRef.current?.reloadAndRest()
       return true;
     }catch (e) {
       message.error('重置失败！');

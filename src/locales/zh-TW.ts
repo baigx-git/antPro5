@@ -6,6 +6,7 @@ import settingDrawer from './zh-TW/settingDrawer';
 import settings from './zh-TW/settings';
 import log from './zh-TW/log';
 import common from './zh-TW/common'
+import detail from './zh-TW/detail'
 
 export default {
   'navBar.lang': '語言',
@@ -20,5 +21,6 @@ export default {
   ...pwa,
   ...component,
   ...log,
-  ...common
+  ...common,
+  ...detail
 };

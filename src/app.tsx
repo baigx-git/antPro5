@@ -99,7 +99,6 @@ const errorHandler = (error: ResponseError) => {
 const headerConfig =(url:string, options?:any) => {
   let { headers = {} } = options;
   const authorization = sessionStorage.getItem('Authorization');
-  console.log(url)
   if (authorization !== null && url.indexOf("/getBusiness")===-1) {
     headers = {
       ...headers,

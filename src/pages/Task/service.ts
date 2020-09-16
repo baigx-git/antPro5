@@ -77,12 +77,8 @@ export async function updateRule(params: TableListParams) {
 
 export async function resetPassword(params: PasswordParams) {
   console.log(params)
-  return true;
-  // return request('/api/rule', {
-  //   method: 'POST',
-  //   data: {
-  //     ...params,
-  //     method: 'update',
-  //   },
-  // });
+  return request('/api/task/taskRestPassword?password='+params.password, {
+    method: 'put',
+    data: params.ids,
+  });
 }

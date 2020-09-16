@@ -88,6 +88,13 @@ export default defineConfig({
       component: './Task',
     },
     {
+      name: 'list.table-detail',
+      icon: 'read',
+      path: '/detail',
+      access:'isMenu',
+      component: './Detail',
+    },
+    {
       name: 'list.table-log',
       icon: 'form',
       path: '/log',

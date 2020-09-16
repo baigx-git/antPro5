@@ -23,6 +23,7 @@ export default {
   'menu.form.advanced-form': '高级表单',
   'menu.list': '列表页',
   'menu.list.table-list': '回收站',
+  'menu.list.table-detail': '任务明细',
   'menu.list.table-log': '日志',
   'menu.list.table-task': '任务管理',
   'menu.list.basic-list': '标准列表',

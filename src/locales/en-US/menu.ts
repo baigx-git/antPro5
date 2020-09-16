@@ -23,6 +23,7 @@ export default {
   'menu.form.advanced-form': 'Advanced Form',
   'menu.list': 'List',
   'menu.list.table-list': 'Recycle Bin',
+  'menu.list.table-detail': 'Task Detail',
   'menu.list.table-log': 'Log',
   'menu.list.table-task': 'Task Manager',
   'menu.list.basic-list': 'Basic List',
