@@ -9,6 +9,7 @@ export default {
   'common.term':'項',
   'common.batch.delete':'批量删除',
   'common.operator':'操作人',
-  'common.operate.time':'操作時間'
+  'common.operate.time':'操作時間',
+  'common.setting':'設定'
 
 }

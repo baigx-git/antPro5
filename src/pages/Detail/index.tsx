@@ -159,6 +159,11 @@ const TableList: React.FC<BasicListProps> = (props) => {
       },
     },
     {
+      title: formatMessage({id: 'detail.taskName'}),
+      dataIndex: 'taskName',
+      hideInSearch: true
+    },
+    {
       title: formatMessage({id: 'detail.barcodeNo'}),
       dataIndex: 'barcodeNo',
       hideInSearch: true

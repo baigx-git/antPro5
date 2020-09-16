@@ -1,5 +1,5 @@
 import {SettingFilled} from '@ant-design/icons';
-import {Button, Divider, message, Input} from 'antd';
+import {Button, Divider, message, Input, Select, Spin} from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable, {ProColumns, ActionType} from '@ant-design/pro-table';
@@ -8,8 +8,11 @@ import {TableListItem,Recycle} from './data.d';
 import {queryRule, recycleBinClean, revokeBinClean} from './service';
 import CreateForm from "./components/CreateForm";
 import {connect, Dispatch,formatMessage} from 'umi';
-import {changeObj} from '@/utils/utils';
+import {changeObj, localLang} from '@/utils/utils';
 import {TaskData} from "@/pages/Task/data";
+import debounce from 'lodash/debounce';
+import {SelectData} from "@/pages/Detail/data";
+const {Option} = Select;
 
 /**
  *  删除节点
@@ -107,44 +110,111 @@ const TableList: React.FC<BasicListProps> = (props) => {
       }
     });
   };
+
+  const [selectValue, setSelectValue] = useState<SelectData>({
+    data: [],
+    fetching: false,
+    value: []
+  });
+
+  const selectedLang = localLang;
+  const [intl] = useState(selectedLang);
+  const fetchTask = (value: any) => {
+    console.log('fetching user', value);
+    setSelectValue({data: [], fetching: true});
+
+    dispatch({
+      type: 'detail/queryTask',
+      payload: {},
+      callback: (res: any) => {
+        setSelectValue({
+          data: res.data,
+          fetching: false,
+        })
+      }
+    })
+
+  };
+
+  const handleChange = (value: any, form) => {
+    setSelectValue({
+      data: [],
+      fetching: false,
+      value
+    })
+    form.setFieldsValue({taskId: value})
+  };
+
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '任务编号',
-      dataIndex: 'number',
+      title: formatMessage({id: 'detail.rfid'}),
+      dataIndex: 'epcNo',
       hideInSearch: true
     },
     {
-      title: '任务名称',
-      dataIndex: 'name',
-      rules: [
-        {
-          required: true,
-          message: '规则名称为必填项',
-        },
-      ],
-    },
-    {
-      title: '业务类型',
-      dataIndex: 'type',
-      valueType: 'string',
-      valueEnum: changeObj(business)
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
-      hideInSearch: true,
-      valueEnum: {
-        true: {text: '已完成', status: true},
-        false: {text: '未完成', status: false},
+      title: formatMessage({id: 'task.name'}),
+      dataIndex: 'taskId',
+      hideInSearch: false,
+      hideInTable: true,
+      renderFormItem: (_, {...rest}, form) => {
+        const {fetching, data, value} = selectValue;
+        return (
+          <Select
+            mode="tags"
+            value={value}
+            placeholder={formatMessage({id: 'task.input'})}
+            notFoundContent={fetching ? <Spin size="small"/> : null}
+            filterOption={false}
+            onSearch={debounce(fetchTask, 800)}
+            onChange={(e: any) => {
+              handleChange(e, form)
+            }}
+            style={{width: '100%'}}
+          >
+            {data?.map(d => (
+              <Option key={d.id} value={d.id}>{d.name}</Option>
+            ))}
+          </Select>
+        )
       },
     },
     {
-      title: '创建日期',
-      dataIndex: 'createdTime',
-      sorter: true,
+      title: formatMessage({id: 'detail.taskName'}),
+      dataIndex: 'taskName',
       hideInSearch: true
-    }
+    },
+    {
+      title: formatMessage({id: 'detail.barcodeNo'}),
+      dataIndex: 'barcodeNo',
+      hideInSearch: true
+    },
+    {
+      title: formatMessage({id: 'detail.serialNo'}),
+      dataIndex: 'serialNo',
+      hideInSearch: true
+    },
+    {
+      title: formatMessage({id: 'detail.modeNo'}),
+      dataIndex: 'modeNo',
+      hideInSearch: true
+    },
+    {
+      title: formatMessage({id: 'detail.buildingNo'}),
+      dataIndex: 'buildingNo',
+      hideInSearch: true
+    },
+    {
+      title: formatMessage({id: 'detail.floor'}),
+      dataIndex: 'floor',
+      hideInSearch: true
+    },
+    {
+      title: formatMessage({id: 'detail.productionLine'}),
+      dataIndex: 'productionLine',
+      hideInSearch: true
+    },
+
+
   ];
 
   return (
@@ -155,7 +225,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
         rowKey="id"
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <SettingFilled spin/> 设置
+            <SettingFilled spin/> {formatMessage({id:'common.setting'})}
           </Button>,
         ]}
         request={(params, sorter, filter) => queryRule({...params, sorter, filter})}

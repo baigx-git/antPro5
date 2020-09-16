@@ -3,7 +3,7 @@ import { TableListParams, TableListItem, Recycle } from './data.d';
 
 export async function queryRule(params?: TableListParams) {
   params.size = params.pageSize;
-  const res = await request('/api/task/getInRecycleBin', {
+  const res = await request('/api/assets/getInRecycleBin', {
     params
   });
   const result = {}
@@ -17,14 +17,14 @@ export async function queryRule(params?: TableListParams) {
 }
 
 export async function recycleBinClean(params: string[]) {
-  return request('/api/task/recycleBinClean', {
+  return request('/api/assets/recycleBinClean', {
     method: 'DELETE',
     data: params,
   });
 }
 
 export async function revokeBinClean(params: string[]) {
-  return request('/api/task/revokeTaskRecycleBin', {
+  return request('/api/assets/revokeAssetsRecycleBin', {
     method: 'PUT',
     data: params,
   });
@@ -41,7 +41,7 @@ export async function addRule(params: TableListItem) {
 }
 
 export async function settingBinClean(params: Recycle) {
-  return request('/api/task/updateRegularTaskClean', {
+  return request('/api/assets/updateRegularAssetsClean', {
     method: 'PUT',
     data: {
       ...params
@@ -53,7 +53,7 @@ export async function settingBinClean(params: Recycle) {
  * 获取回收站清理周期
  */
 export async function getRegularTaskClean() {
-  return request('/api/task/getRegularTaskClean', {
+  return request('/api/assets/getRegularAssetsClean', {
     method: 'GET',
   });
 }

@@ -9,5 +9,7 @@ export default {
   'common.term':'term',
   'common.batch.delete':'batch delete',
   'common.operator':'Operator',
-  'common.operate.time':'Operate time'
+  'common.operate.time':'Operate time',
+  'common.setting':'setting'
+
 }

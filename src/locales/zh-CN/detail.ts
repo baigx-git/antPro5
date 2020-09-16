@@ -1,6 +1,7 @@
 export default {
   'detail.rfid':'rfid 号码',
   'task.name':'任务名称',
+  'detail.taskName':'任务名称',
   'task.input':'请输入任务名称',
   'detail.name':'明细查询',
   'detail.barcodeNo':'条形码',

@@ -1,6 +1,7 @@
 export default {
   'detail.rfid':'epcNo',
   'task.name':'task name',
+  'detail.taskName':'task name',
   'task.input':'please input task name',
   'detail.name':'Detail Query',
   'detail.barcodeNo':'barcodeNo',
