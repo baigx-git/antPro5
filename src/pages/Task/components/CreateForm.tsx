@@ -30,13 +30,17 @@ interface CreateFormProps {
   onCancel: () => void;
   business:any[];
   onFinish:(values: any) => void;
-  check:boolean
+  check:boolean;
+  values:number
+
 }
 
 
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  const { modalVisible, onCancel, business=[],onFinish, check } = props;
+  const { modalVisible, onCancel, business=[],onFinish, check, values } = props;
+
+  console.log(values)
 
 
   const fileProps = {
@@ -49,8 +53,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     beforeUpload(file: RcFile, fileList:RcFile[]) {
       return new Promise((resolve, reject:(reason?: any) => void) => {
         fileList.forEach((item:RcFile) => {
-          if (!['xls','xlsx','csv'].includes(item.name.split(".")[1])) {
-            message.error('上传类型为xls,xlsx,csv')
+          if (!['xls','xlsx'].includes(item.name.split(".")[item.name.split('.').length-1]) && values===1) {
+            message.error('上传类型为xls,xlsx')
+            return reject(false)
+          }
+          debugger
+          if (!['csv'].includes(item.name.split(".")[item.name.split('.').length-1]) && values===2) {
+            message.error('离线文件上传类型为csv')
             return reject(false)
           }
           if (item.size / 1024 / 1024 > 10) {
@@ -85,10 +94,11 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       format: (percent:number) => `${parseFloat(percent.toFixed(2))}%`,
     },
   }
+
   return (
     <Modal
       destroyOnClose
-      title="新建任务"
+      title={values===1?"新建任务":"离线任务"}
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}
@@ -113,7 +123,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             }
           ]}
         >
-          <Input placeholder="请输入任务名称" />
+          <Input placeholder="请输入任务名称" autocomplete="new-password" />
         </Form.Item>
 
         <Form.Item
@@ -131,7 +141,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           ]}
           hasFeedback
         >
-          <Input.Password />
+          <Input.Password autocomplete="new-password" />
         </Form.Item>
 
         <Form.Item
@@ -152,7 +162,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="文件"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          extra="支持扩展名 .xlsx, .xls, .csv"
+          extra={values===1?"支持扩展名 .xlsx, .xls":"支持扩展名 .csv"}
         >
           <Upload {...fileProps}>
             <Button>

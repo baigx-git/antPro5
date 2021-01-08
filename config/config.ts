@@ -84,14 +84,14 @@ export default defineConfig({
       name: 'list.table-task',
       icon: 'profile',
       path: '/task',
-      access:'isMenu',
+      //access:'isMenu',
       component: './Task',
     },
     {
       name: 'list.table-detail',
       icon: 'read',
       path: '/detail',
-      access:'isMenu',
+      //access:'isMenu',
       component: './Detail',
     },
     {
@@ -100,6 +100,13 @@ export default defineConfig({
       path: '/log',
       access:'isMenu',
       component: './Log',
+    },
+    {
+      name: 'list.table-user',
+      icon: 'user',
+      path: '/userManager',
+      access:'isMenu',
+      component: './UserManager',
     },
     {
       component: './404',

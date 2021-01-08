@@ -1,5 +1,5 @@
 import {PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, message, Input} from 'antd';
+import {Button, Divider, message, Input,Upload,Space,Dropdown,Menu } from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
 import ProTable, {ProColumns, ActionType} from '@ant-design/pro-table';
@@ -9,6 +9,8 @@ import {queryRule, removeRule, downloadExcelFile,resetPassword} from './service'
 import {connect, Dispatch, useAccess, Access} from 'umi';
 import {changeObj} from '@/utils/utils';
 import PwForm from "@/pages/Task/components/PwForm";
+import { UploadOutlined } from '@ant-design/icons';
+import {RcFile, UploadChangeParam} from "antd/lib/upload";
 
 /**
  *  删除节点
@@ -67,6 +69,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
   } = props;
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [menuNumber, handleMenuNumber] = useState<number>(0);
   const [createPwVisible, handlePwVisible] = useState<boolean>(false);
 
   const [check, handleCheck] = useState<boolean>(false);
@@ -127,6 +130,61 @@ const TableList: React.FC<BasicListProps> = (props) => {
 
   };
 
+  const fileProps = {
+    name: 'file',
+    action: '/api/assets/open/checkAssetsFileUpload',
+    multiple:false,
+    listType:"text",
+    maxCount:1,
+    showUploadList:false,
+    headers: {
+      'Authorization': sessionStorage.getItem('Authorization'),
+    },
+    beforeUpload(file: RcFile, fileList:RcFile[]) {
+      return new Promise((resolve, reject:(reason?: any) => void) => {
+        fileList.forEach((item:RcFile) => {
+          if (!['xls','xlsx'].includes(item.name.split(".")[1])) {
+            message.error('上传类型为xls,xlsx')
+            return reject(false)
+          }
+          if (item.size / 1024 / 1024 > 10) {
+            message.error('最大上传10M')
+            return reject(false)
+          }
+          return resolve(true);
+        })
+      })
+    },
+    onRemove(file: RcFile) {
+      console.log(file)
+
+    },
+    onChange(info:UploadChangeParam) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        if(info.file.response.error.errCode){
+          message.error(`${info.file.name} file upload failed.`);
+        }else{
+          message.success(`${info.file.name} file uploaded successfully`);
+        }
+
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+
+    progress: {
+      strokeColor: {
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      },
+      strokeWidth: 3,
+      format: (percent:number) => `${parseFloat(percent.toFixed(2))}%`,
+    },
+  }
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '任务编号',
@@ -169,19 +227,44 @@ const TableList: React.FC<BasicListProps> = (props) => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a
-            onClick={() => {
-              downloadFile(record);
-            }}
-          >
-            下载
-          </a>
+
+          <Space direction="horizontal" style={{ width: '100%' }} size="large">
+            {/*<Upload*/}
+            {/*  {...fileProps}*/}
+            {/*  data={{*/}
+            {/*    taskId:record.id*/}
+            {/*  }}*/}
+
+            {/*>*/}
+            {/*  <Button icon={<UploadOutlined />}>上传</Button>*/}
+            {/*</Upload>*/}
+            <Button
+              onClick={() => {
+                downloadFile(record);
+              }}
+            >
+              下载
+            </Button>
+          </Space>
+
+
         </>
       ),
     },
   ];
 
   const access = useAccess()
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={() => {handleModalVisible(true)
+        handleMenuNumber(1)}}>新建任务</Menu.Item>
+      <Menu.Item key="2" onClick={() =>{ handleModalVisible(true)
+        handleMenuNumber(2)
+      }}>离线任务</Menu.Item>
+    </Menu>
+  );
+
   return (
     <PageContainer>
       <ProTable<TableListItem>
@@ -190,10 +273,16 @@ const TableList: React.FC<BasicListProps> = (props) => {
         rowKey="id"
         toolBarRender={() => [
           <Access accessible={access.isPermission('ROLE_ADMIN')}>
-            <Button type="primary" onClick={() => handleModalVisible(true)}>
-              <PlusOutlined/> 新建任务
-            </Button>
+            {/*<Button type="primary" onClick={() => handleModalVisible(true)}>*/}
+            {/*  <PlusOutlined/> 新建任务*/}
+            {/*</Button>*/}
+            <Dropdown key="menu" overlay={menu}>
+              <Button>
+                任务
+              </Button>
+            </Dropdown>
           </Access>,
+
         ]}
         request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
         columns={columns}
@@ -209,6 +298,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
             </div>
           }
         >
+          <Access accessible={access.isPermission('ROLE_ADMIN')}>
           <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
@@ -226,10 +316,11 @@ const TableList: React.FC<BasicListProps> = (props) => {
           >
             重置密码
           </Button>
+          </Access>
         </FooterToolbar>
       )}
 
-      <CreateForm onCancel={() => handleModalVisible(false)} check={check} modalVisible={createModalVisible}
+      <CreateForm onCancel={() => handleModalVisible(false)} check={check} modalVisible={createModalVisible} values={ menuNumber}
                   business={business} onFinish={onFinish}>
       </CreateForm>
 

@@ -7,6 +7,7 @@ import settings from './zh-TW/settings';
 import log from './zh-TW/log';
 import common from './zh-TW/common'
 import detail from './zh-TW/detail'
+import userManager from  './zh-TW/user'
 
 export default {
   'navBar.lang': '語言',
@@ -22,5 +23,6 @@ export default {
   ...component,
   ...log,
   ...common,
-  ...detail
+  ...detail,
+  ...userManager
 };

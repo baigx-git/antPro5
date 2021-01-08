@@ -12,6 +12,7 @@ import {connect, Dispatch, formatMessage} from 'umi';
 import debounce from 'lodash/debounce';
 import {localLang, intlMap, changeObj} from '@/utils/utils';
 import {TaskData} from "@/pages/Task/data";
+import {Access, useAccess} from "@@/plugin-access/access";
 
 const {Option} = Select;
 
@@ -140,11 +141,15 @@ const TableList: React.FC<BasicListProps> = (props) => {
         const {fetching, data, value} = selectValue;
         return (
           <Select
-            mode="tags"
+            showSearch
+            showArrow={false}
             value={value}
             placeholder={formatMessage({id: 'task.input'})}
             notFoundContent={fetching ? <Spin size="small"/> : null}
-            filterOption={false}
+            //filterOption={false}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             onSearch={debounce(fetchTask, 800)}
             onChange={(e: any) => {
               handleChange(e, form)
@@ -157,6 +162,13 @@ const TableList: React.FC<BasicListProps> = (props) => {
           </Select>
         )
       },
+    },
+
+    {
+      title: '业务类型',
+      dataIndex: 'status',
+      valueType: 'string',
+      valueEnum: changeObj(business)
     },
     {
       title: formatMessage({id: 'detail.taskName'}),
@@ -193,10 +205,8 @@ const TableList: React.FC<BasicListProps> = (props) => {
       dataIndex: 'productionLine',
       hideInSearch: true
     },
-
-
   ];
-
+  const access = useAccess()
   return (
     <PageContainer>
       <ConfigProvider
@@ -214,6 +224,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
         }}
       />
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -222,6 +233,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
             </div>
           }
         >
+          <Access accessible={access.isPermission('ROLE_ADMIN')}>
           <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
@@ -231,9 +243,11 @@ const TableList: React.FC<BasicListProps> = (props) => {
           >
             {formatMessage({id:'common.remove'})}
           </Button>
-
+        </Access>
         </FooterToolbar>
+
       )}
+
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} setCycleDay={setCycleDay}
                   onFinish={onFinish} check={check}>
       </CreateForm>

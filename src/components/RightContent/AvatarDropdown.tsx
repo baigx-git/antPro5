@@ -40,7 +40,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       domEvent: React.MouseEvent<HTMLElement>;
     }) => {
       const { key } = event;
-      debugger
       if (key === 'logout') {
         setInitialState({ ...initialState, currentUser: undefined });
         loginOut();

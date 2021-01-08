@@ -7,6 +7,7 @@ import settings from './en-US/settings';
 import log from './en-US/log';
 import common from './en-US/common'
 import detail from './en-US/detail'
+import userManager from  './en-US/user'
 
 export default {
   'navBar.lang': 'Languages',
@@ -24,5 +25,6 @@ export default {
   ...component,
   ...log,
   ...common,
-  ...detail
+  ...detail,
+  ...userManager
 };

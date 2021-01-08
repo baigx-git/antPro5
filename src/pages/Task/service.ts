@@ -6,8 +6,8 @@ export async function queryRule(params?: TableListParams) {
   const res = await request('/api/task/getList', {
     params
   });
-  const result = {}
-  if (res) {
+  const result = {data:[],total:0,current:1,pageSize:10}
+  if (res && !res.error) {
     result.data = res.result.records
     result.total = res.result.total
     result.current = res.result.current
@@ -76,7 +76,6 @@ export async function updateRule(params: TableListParams) {
 }
 
 export async function resetPassword(params: PasswordParams) {
-  console.log(params)
   return request('/api/task/taskRestPassword?password='+params.password, {
     method: 'put',
     data: params.ids,

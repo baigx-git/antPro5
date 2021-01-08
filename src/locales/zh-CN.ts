@@ -7,6 +7,7 @@ import settings from './zh-CN/settings';
 import log from './zh-CN/log';
 import common from './zh-CN/common'
 import detail from './zh-CN/detail'
+import userManager from './zh-CN/user'
 
 export default {
   'navBar.lang': '语言',
@@ -24,5 +25,6 @@ export default {
   ...component,
   ...log,
   ...common,
-  ...detail
+  ...detail,
+  ...userManager
 };

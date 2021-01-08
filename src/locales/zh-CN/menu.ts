@@ -26,6 +26,7 @@ export default {
   'menu.list.table-detail': '任务明细',
   'menu.list.table-log': '日志',
   'menu.list.table-task': '任务管理',
+  'menu.list.table-user': '用户管理',
   'menu.list.basic-list': '标准列表',
   'menu.list.card-list': '卡片列表',
   'menu.list.search-list': '搜索列表',
