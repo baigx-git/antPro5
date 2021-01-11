@@ -109,6 +109,19 @@ export default defineConfig({
       component: './UserManager',
     },
     {
+      name: 'account',
+      icon: 'solution',
+      path: '/account',
+      routes: [
+        {
+          name: 'settings',
+          icon: 'sync',
+          path: '/account/settings',
+          component: './account/settings',
+        },
+      ],
+    },
+    {
       component: './404',
     },
   ],

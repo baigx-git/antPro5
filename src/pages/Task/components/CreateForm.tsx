@@ -163,6 +163,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
           extra={values===1?"支持扩展名 .xlsx, .xls":"支持扩展名 .csv"}
+          rules={[
+            {
+              required: true,
+              message: '请上传文件',
+            }
+          ]}
         >
           <Upload {...fileProps}>
             <Button>

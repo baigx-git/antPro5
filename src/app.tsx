@@ -94,12 +94,13 @@ const errorHandler = (error: ResponseError) => {
       message: '网络异常',
     });
   }
+  history.push('/user/login');
   throw error;
 };
 const headerConfig =(url:string, options?:any) => {
   let { headers = {} } = options;
   const authorization = sessionStorage.getItem('Authorization');
-  if (authorization !== null && url.indexOf("/getBusiness")===-1) {
+  if (authorization !== null && url.indexOf("/getBusiness")===-1 && url.indexOf("/authentication/login")===-1) {
     headers = {
       ...headers,
       'Authorization': authorization

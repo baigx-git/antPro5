@@ -90,12 +90,10 @@ const TableList: React.FC<{}> = () => {
   const onSet = (values:any) => {
 
     let user = {...currentRow, ...values }
-    console.log(user)
     if (user.id) {
       const hide = message.loading('正在修改');
       try {
         updateUser(user).then(res=>{
-          debugger
           hide();
          // message.success('修改成功，即将刷新');
           handleUserVisible(false)

@@ -8,9 +8,9 @@
 export default {
   dev: {
     '/api/': {
-    //target: 'http://10.11.2.61:8082',
+    target: 'http://10.11.2.61:8082',
      // target: 'http://10.11.4.194:8082',
-     target: 'http://10.11.3.111:8082',
+     //target: 'http://10.11.3.111:8082',
       changeOrigin: true,
       pathRewrite: { '/api/': '/' },
     },
