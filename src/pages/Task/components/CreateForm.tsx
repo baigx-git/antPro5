@@ -47,6 +47,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     name: 'file',
     action: '/api/task/fileUpload',
     multiple:false,
+    maxCount:1,
     headers: {
       'Authorization': sessionStorage.getItem('Authorization'),
     },
@@ -57,7 +58,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             message.error('上传类型为xls,xlsx')
             return reject(false)
           }
-          debugger
           if (!['csv'].includes(item.name.split(".")[item.name.split('.').length-1]) && values===2) {
             message.error('离线文件上传类型为csv')
             return reject(false)
@@ -170,7 +170,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             }
           ]}
         >
-          <Upload {...fileProps}>
+          <Upload  {...fileProps}>
             <Button>
               <UploadOutlined /> 上传
             </Button>

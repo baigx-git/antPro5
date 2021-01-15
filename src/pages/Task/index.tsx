@@ -9,7 +9,6 @@ import {queryRule, removeRule, downloadExcelFile,resetPassword} from './service'
 import {connect, Dispatch, useAccess, Access} from 'umi';
 import {changeObj} from '@/utils/utils';
 import PwForm from "@/pages/Task/components/PwForm";
-import { UploadOutlined } from '@ant-design/icons';
 import {RcFile, UploadChangeParam} from "antd/lib/upload";
 
 /**
@@ -87,11 +86,13 @@ const TableList: React.FC<BasicListProps> = (props) => {
       type: 'task/createTask',
       payload: param,
       callback: res => {
+        handleCheck(false)
         if (res.result) {
-          handleCheck(false)
           handleModalVisible(false)
           message.success("创建task成功")
           actionRef.current?.reloadAndRest()
+        }else if(res.error){
+          message.error(res?.error.errMsg)
         }
       }
     });
@@ -135,7 +136,6 @@ const TableList: React.FC<BasicListProps> = (props) => {
     action: '/api/assets/open/checkAssetsFileUpload',
     multiple:false,
     listType:"text",
-    maxCount:1,
     showUploadList:false,
     headers: {
       'Authorization': sessionStorage.getItem('Authorization'),

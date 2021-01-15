@@ -95,7 +95,11 @@ const TableList: React.FC<{}> = () => {
       try {
         updateUser(user).then(res=>{
           hide();
-         // message.success('修改成功，即将刷新');
+          if(!res.result){
+            message.error(res.error.errMsg)
+          }else{
+            message.success('修改成功，即将刷新');
+          }
           handleUserVisible(false)
           actionRef.current?.reloadAndRest()
         });
@@ -113,7 +117,7 @@ const TableList: React.FC<{}> = () => {
           registerUser(user).then(res=>{
           hide();
             if(!res.result){
-              message.success('新增失败，即将刷新')
+              message.error(res.error.errMsg)
             }else{
                message.success('新增成功，即将刷新');
             }
