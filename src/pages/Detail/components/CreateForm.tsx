@@ -6,6 +6,7 @@ import {
   Modal
 } from 'antd';
 import {Recycle} from '../data.d';
+import {formatMessage} from "@@/plugin-locale/localeExports";
 
 interface CreateFormProps {
   modalVisible: boolean;
@@ -26,7 +27,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="设置"
+      title={formatMessage({id:"common.setting"})}
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}
@@ -37,28 +38,28 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         onFinish={onFinish}
         initialValues={setCycleDay}
       >
-        <Form.Item label="回收站自动清理频率">
+        <Form.Item label={formatMessage({id:"task.clean.frequency"})}>
             <Form.Item
               {...formItemLayout}
               name="cycleDay"
               noStyle
-              rules={[{ required: true, message: '请输入清理频率' }]}
+              rules={[{ required: true, message: formatMessage({id:"task.input.frequency"})} ]}
             >
-              <InputNumber  style={{ width: 160 }} placeholder="请输入清理频率" min={1} max={31} />
+              <InputNumber  style={{ width: 160 }} placeholder={formatMessage({id:"task.input.frequency"})} min={1} max={31} />
             </Form.Item>
             <span style={{marginLeft: 10}}>
-              天
+              {formatMessage({id:"day"})}
             </span>
           </Form.Item>
 
         <Form.Item wrapperCol={{ span: 20, offset: 4 }}>
-          <span>说明：默认回收站只保留30创建的task</span>
+          <span>{formatMessage({id:"task.frequency.describe"})}</span>
         </Form.Item>
 
 
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
           <Button type="primary" htmlType="submit" loading={check}>
-            保存
+            {formatMessage({id:"save"})}
           </Button>
         </Form.Item>
       </Form>

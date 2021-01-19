@@ -2,16 +2,17 @@ import {SettingFilled} from '@ant-design/icons';
 import {Button, Divider, message, Input, Select, Spin} from 'antd';
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
-import ProTable, {ProColumns, ActionType} from '@ant-design/pro-table';
+import ProTable, {ProColumns, ActionType,ConfigProvider} from '@ant-design/pro-table';
 
 import {TableListItem,Recycle} from './data.d';
 import {queryRule, recycleBinClean, revokeBinClean} from './service';
 import CreateForm from "./components/CreateForm";
 import {connect, Dispatch,formatMessage} from 'umi';
-import {changeObj, localLang} from '@/utils/utils';
+import {changeObj, localLang,intlMap} from '@/utils/utils';
 import {TaskData} from "@/pages/Task/data";
 import debounce from 'lodash/debounce';
 import {SelectData} from "@/pages/Detail/data";
+
 const {Option} = Select;
 
 /**
@@ -120,7 +121,6 @@ const TableList: React.FC<BasicListProps> = (props) => {
   const selectedLang = localLang;
   const [intl] = useState(selectedLang);
   const fetchTask = (value: any) => {
-    console.log('fetching user', value);
     setSelectValue({data: [], fetching: true});
 
     dispatch({
@@ -160,11 +160,14 @@ const TableList: React.FC<BasicListProps> = (props) => {
         const {fetching, data, value} = selectValue;
         return (
           <Select
-            mode="tags"
+            showSearch
+            showArrow={true}
             value={value}
             placeholder={formatMessage({id: 'task.input'})}
             notFoundContent={fetching ? <Spin size="small"/> : null}
-            filterOption={false}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             onSearch={debounce(fetchTask, 800)}
             onChange={(e: any) => {
               handleChange(e, form)
@@ -232,6 +235,32 @@ const TableList: React.FC<BasicListProps> = (props) => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
+        search={{
+          optionRender: ({ searchText, resetText }, { form }) => [
+            <Button
+              key="search"
+              type="primary"
+              onClick={() => {
+                form?.submit();
+              }}
+            >
+              {searchText}
+            </Button>,
+            <Button
+              key="rest"
+              onClick={() => {
+                setSelectValue({
+                  data: [],
+                  fetching: false,
+                  value:undefined
+                })
+                form?.resetFields();
+              }}
+            >
+              {resetText}
+            </Button>,
+          ],
         }}
       />
       {selectedRowsState?.length > 0 && (

@@ -1,5 +1,4 @@
-import {SettingFilled} from '@ant-design/icons';
-import {Button, Divider, message, Select, Spin} from 'antd';
+import {Button, Divider, message, Select, Spin, Empty, Modal} from 'antd';
 
 import React, {useState, useRef, useEffect} from 'react';
 import {PageContainer, FooterToolbar} from '@ant-design/pro-layout';
@@ -13,28 +12,11 @@ import debounce from 'lodash/debounce';
 import {localLang, intlMap, changeObj} from '@/utils/utils';
 import {TaskData} from "@/pages/Task/data";
 import {Access, useAccess} from "@@/plugin-access/access";
+import {removeRule} from "@/pages/Task/service";
+import {ExclamationCircleOutlined} from '@ant-design/icons';
 
 const {Option} = Select;
-
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  const hide = message.loading(formatMessage({id:"common.delete"}));
-  if (!selectedRows) return true;
-  try {
-    const ids = selectedRows.map((row) => row.id);
-    await recycleBinClean(ids);
-    hide();
-    message.success(formatMessage({id:"common.delete.success"}));
-    return true;
-  } catch (error) {
-    hide();
-    message.error(formatMessage({id:"common.delete.error"}));
-    return false;
-  }
-};
+const {confirm} = Modal;
 
 
 interface BasicListProps {
@@ -82,10 +64,10 @@ const TableList: React.FC<BasicListProps> = (props) => {
         handleCheck(false)
         if (res.result) {
           handleModalVisible(false)
-          message.success("设置成功")
+          message.success(formatMessage({id: "operation"}) + " " + formatMessage({id: "success"}))
           actionRef.current?.reloadAndRest();
         } else {
-          message.success("设置失败")
+          message.success(formatMessage({id: "operation"}) + " " + formatMessage({id: "error"}))
         }
       }
     });
@@ -101,7 +83,6 @@ const TableList: React.FC<BasicListProps> = (props) => {
   const [intl] = useState(selectedLang);
 
   const fetchTask = (value: any) => {
-    console.log('fetching user', value);
     setSelectValue({data: [], fetching: true});
 
     dispatch({
@@ -126,6 +107,40 @@ const TableList: React.FC<BasicListProps> = (props) => {
     form.setFieldsValue({taskId: value})
   };
 
+  /**
+   *  删除节点
+   * @param selectedRows
+   */
+  const handleRemove = async (selectedRows: TableListItem[]) => {
+    confirm({
+      title: formatMessage({id: 'common.comfirm.delete'}),
+      icon: <ExclamationCircleOutlined/>,
+      onOk() {
+        const hide = message.loading(formatMessage({id: "common.delete"}));
+        if (!selectedRows) return true;
+        try {
+          const ids = selectedRows.map((row) => row.id);
+          recycleBinClean(ids).then(res => {
+            hide();
+            message.success(formatMessage({id: "common.delete.success"}));
+            setSelectedRows([]);
+            actionRef.current?.reloadAndRest();
+            return true;
+          });
+
+        } catch (error) {
+          hide();
+          message.error(formatMessage({id: "common.delete.error"}));
+          return false;
+        }
+
+      },
+      onCancel() {
+      },
+    });
+
+  };
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: formatMessage({id: 'detail.rfid'}),
@@ -145,7 +160,7 @@ const TableList: React.FC<BasicListProps> = (props) => {
             showArrow={false}
             value={value}
             placeholder={formatMessage({id: 'task.input'})}
-            notFoundContent={fetching ? <Spin size="small"/> : null}
+            notFoundContent={fetching ? <Spin size="small"/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
             //filterOption={false}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -165,9 +180,8 @@ const TableList: React.FC<BasicListProps> = (props) => {
     },
 
     {
-      title: '业务类型',
-      dataIndex: 'status',
-      valueType: 'string',
+      title: formatMessage({id: 'task.type'}),
+      dataIndex: 'type',
       valueEnum: changeObj(business)
     },
     {
@@ -214,43 +228,69 @@ const TableList: React.FC<BasicListProps> = (props) => {
           intl: intlMap[intl],
         }}
       >
-      <ProTable<TableListItem>
-        headerTitle={formatMessage({id: 'detail.name'})}
-        actionRef={actionRef}
-        rowKey="id"
-        request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-      />
+        <ProTable<TableListItem>
+          headerTitle={formatMessage({id: 'detail.name'})}
+          actionRef={actionRef}
+          rowKey="id"
+          request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
+          columns={columns}
+          rowSelection={{
+            onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+          }}
+          search={{
+            optionRender: ({searchText, resetText}, {form}) => [
+              <Button
+                key="search"
+                type="primary"
+                onClick={() => {
+                  form?.submit();
+                }}
+              >
+                {searchText}
+              </Button>,
+              <Button
+                key="rest"
+                onClick={() => {
+                  setSelectValue({
+                    data: [],
+                    fetching: false,
+                    value: undefined
+                  })
+                  form?.resetFields();
+                }}
+              >
+                {resetText}
+              </Button>,
+            ],
+          }}
+        />
 
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {formatMessage({id:'common.select'})} <a style={{fontWeight: 600}}>{selectedRowsState.length}</a> {formatMessage({id:'common.term'})}&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Access accessible={access.isPermission('ROLE_ADMIN')}>
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest();
-            }}
+        {selectedRowsState?.length > 0 && (
+          <FooterToolbar
+            extra={
+              <div>
+                {formatMessage({id: 'common.select'})} <a
+                style={{fontWeight: 600}}>{selectedRowsState.length}</a> {formatMessage({id: 'common.term'})}&nbsp;&nbsp;
+              </div>
+            }
           >
-            {formatMessage({id:'common.remove'})}
-          </Button>
-        </Access>
-        </FooterToolbar>
+            <Access accessible={access.isPermission('ROLE_ADMIN')}>
+              <Button
+                onClick={async () => {
+                  await handleRemove(selectedRowsState);
+                }}
+              >
+                {formatMessage({id: 'common.remove'})}
+              </Button>
+            </Access>
+          </FooterToolbar>
 
-      )}
+        )}
 
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} setCycleDay={setCycleDay}
-                  onFinish={onFinish} check={check}>
-      </CreateForm>
+        <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}
+                    setCycleDay={setCycleDay}
+                    onFinish={onFinish} check={check}>
+        </CreateForm>
       </ConfigProvider>
     </PageContainer>
   );

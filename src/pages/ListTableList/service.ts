@@ -16,6 +16,22 @@ export async function queryRule(params?: TableListParams) {
   return result;
 }
 
+
+export async function queryTask(params?: TableListParams) {
+  params.size = params.pageSize;
+  const res = await request('/api/task/getInRecycleBin', {
+    params
+  });
+  const result = {}
+  if (res) {
+    result.data = res.result.records
+    result.total = res.result.total
+    result.current = res.result.current
+    result.pageSize = res.result.size
+  }
+  return result;
+}
+
 export async function recycleBinClean(params: string[]) {
   return request('/api/assets/recycleBinClean', {
     method: 'DELETE',

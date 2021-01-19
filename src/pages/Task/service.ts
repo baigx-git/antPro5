@@ -35,7 +35,7 @@ export async function createTaskController(params: UpLoadParams) {
 export function downloadExcelFile(id: string) {
   const options = {
     headers: {
-      'Authorization': sessionStorage.getItem('Authorization'),
+      'Authorization': localStorage.getItem('Authorization'),
       'content-type': "application/json;charset=UTF-8"
     },
     responseType: 'blob',

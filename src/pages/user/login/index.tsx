@@ -1,7 +1,7 @@
 import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState } from 'react';
-import { Link, SelectLang, useModel } from 'umi';
+import { Link, SelectLang, useModel , formatMessage} from 'umi';
 import { getPageQuery } from '@/utils/utils';
 import logo from '@/assets/logo.svg';
 import { LoginParamsType, fakeAccountLogin } from '@/services/login';
@@ -67,18 +67,16 @@ const Login: React.FC<{}> = () => {
   const handleSubmit = async (values: LoginParamsType) => {
     setSubmitting(true);
     try {
-      // 登录
       const msg = await fakeAccountLogin({ ...values, type });
       if(msg.error?.errCode){
         message.error(msg.error.errMsg);
       } else {
-        message.success('登录成功！');
         if(autoLogin){
           Cookies.set("userInfo",{...values,autoLogin})
         }else {
           Cookies.remove("userInfo")
         }
-        sessionStorage.setItem('Authorization', msg.result);
+        localStorage.setItem('Authorization', msg.result);
         replaceGoto();
         setTimeout(() => {
           refresh();
@@ -110,12 +108,12 @@ const Login: React.FC<{}> = () => {
               <img alt="logo" className={styles.logo} src={logo} />
             </Link>
           </div>
-          <div className={styles.desc}>力信通（苏州）科技有限公司</div>
+          <div className={styles.desc}>{formatMessage({id:"login.title"})}</div>
         </div>
 
         <div className={styles.main}>
           <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
-            <Tab key="account" tab="账户密码登录">
+            <Tab key="account" tab={formatMessage({id:"login.tab.title"})}>
               {status === 'error' && loginType === 'account' && !submitting && (
                 <LoginMessage content="账户或密码错误（admin/ant.design）" />
               )}
@@ -123,32 +121,32 @@ const Login: React.FC<{}> = () => {
               <Username
                 name="username"
                 defaultValue={username}
-                placeholder="用户名"
+                placeholder={formatMessage({id:"login.username"})}
                 rules={[
                   {
                     required: true,
-                    message: '请输入用户名!',
+                    message: formatMessage({id:"login.ipnut.username"}),
                   },
                 ]}
               />
               <Password
                 name="password"
                 defaultValue={password}
-                placeholder="密码"
+                placeholder={formatMessage({id:"login.password"})}
                 rules={[
                   {
                     required: true,
-                    message: '请输入密码！',
+                    message: formatMessage({id:"login.ipnut.password"}),
                   },
                 ]}
               />
             </Tab>
             <div>
               <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
-                自动登录
+                {formatMessage({id:"autologin"})}
               </Checkbox>
             </div>
-            <Submit loading={submitting}>登录</Submit>
+            <Submit loading={submitting}>{formatMessage({id:"login"})}</Submit>
           </LoginFrom>
         </div>
       </div>

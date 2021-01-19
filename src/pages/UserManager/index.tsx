@@ -218,7 +218,7 @@ const TableList: React.FC<{}> = () => {
     //
     // }
     {
-      title: '操作',
+      title: formatMessage({id:"operation"}),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => (

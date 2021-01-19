@@ -10,6 +10,13 @@ export default {
   'common.batch.delete':'batch delete',
   'common.operator':'Operator',
   'common.operate.time':'Operate time',
-  'common.setting':'setting'
+  'common.setting':'setting',
+  'common.comfirm.delete':"Are you sure delete it ?",
+  'common.comfirm.clean':"Are you sure clean it ?",
+  'common.comfirm.recovery':"Are you sure recovery it ?",
+  "login":"login",
+  'autologin':"autologin",
+  'reset.password':"reset password",
+  "save":"save"
 
 }

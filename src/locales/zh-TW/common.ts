@@ -10,6 +10,13 @@ export default {
   'common.batch.delete':'批量删除',
   'common.operator':'操作人',
   'common.operate.time':'操作時間',
-  'common.setting':'設定'
+  'common.setting':'設定',
+  'common.comfirm.delete':"確定删除嗎?",
+  'common.comfirm.clean':"確定清理嗎?",
+  'common.comfirm.recovery':"確定恢復嗎?",
+  'login':"登錄",
+  'autologin':"自動登錄",
+  'reset.password':"重置密碼",
+  "save":"保存"
 
 }

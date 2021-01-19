@@ -49,25 +49,22 @@ export default defineConfig({
       ],
     },
     {
-      path: '/welcome',
-      name: 'welcome',
-      icon: 'smile',
-      component: './Welcome',
+      path: '/',
+      redirect: '/task',
     },
     {
-      path: '/admin',
-      name: 'admin',
-      icon: 'crown',
-      access: 'canAdmin',
-      component: './Admin',
-      routes: [
-        {
-          path: '/admin/sub-page',
-          name: 'sub-page',
-          icon: 'smile',
-          component: './Welcome',
-        },
-      ],
+      name: 'list.table-task',
+      icon: 'profile',
+      path: '/task',
+      access:'isMenu',
+      component: './Task',
+    },
+    {
+      name: 'list.table-detail',
+      icon: 'read',
+      path: '/detail',
+      access:'isMenu',
+      component: './Detail',
     },
     {
       name: 'list.table-list',
@@ -75,24 +72,6 @@ export default defineConfig({
       path: '/list',
       access:'isMenu',
       component: './ListTableList',
-    },
-    {
-      path: '/',
-      redirect: '/welcome',
-    },
-    {
-      name: 'list.table-task',
-      icon: 'profile',
-      path: '/task',
-      //access:'isMenu',
-      component: './Task',
-    },
-    {
-      name: 'list.table-detail',
-      icon: 'read',
-      path: '/detail',
-      //access:'isMenu',
-      component: './Detail',
     },
     {
       name: 'list.table-log',
@@ -111,6 +90,7 @@ export default defineConfig({
     {
       name: 'account',
       icon: 'solution',
+      access:'isMenu',
       path: '/account',
       routes: [
         {

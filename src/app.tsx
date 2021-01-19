@@ -26,6 +26,7 @@ export async function getInitialState(): Promise<{
         settings: defaultSettings,
       };
     } catch (error) {
+      console.log("333")
       history.push('/user/login');
     }
   }
@@ -45,7 +46,7 @@ export const layout = ({
     footerRender: () => <Footer />,
     onPageChange: () => {
       // 如果没有登录，重定向到 login
-      if ( history.location.pathname!="/user/register" && !initialState?.currentUser?.id && history.location.pathname !== '/user/login') {
+      if ( history.location.pathname != "/user/register" && !initialState?.currentUser?.id && history.location.pathname !== '/user/login') {
         history.push('/user/login');
       }
     },
@@ -99,7 +100,7 @@ const errorHandler = (error: ResponseError) => {
 };
 const headerConfig =(url:string, options?:any) => {
   let { headers = {} } = options;
-  const authorization = sessionStorage.getItem('Authorization');
+  const authorization = localStorage.getItem('Authorization');
   if (authorization !== null && url.indexOf("/getBusiness")===-1 && url.indexOf("/authentication/login")===-1) {
     headers = {
       ...headers,
@@ -118,7 +119,7 @@ const headerConfig =(url:string, options?:any) => {
 const responseConfig=(response:any) => {
   const authorization = response.headers.get('Authorization');
   if (authorization !== null) {
-    sessionStorage.setItem('Authorization', authorization);
+    localStorage.setItem('Authorization', authorization);
   }
   return response;
 };

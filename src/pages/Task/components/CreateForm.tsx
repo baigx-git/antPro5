@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import {RcFile, UploadChangeParam} from "antd/lib/upload";
+import { formatMessage} from 'umi';
 
 const { Option } = Select;
 
@@ -49,21 +50,21 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     multiple:false,
     maxCount:1,
     headers: {
-      'Authorization': sessionStorage.getItem('Authorization'),
+      'Authorization': localStorage.getItem('Authorization'),
     },
     beforeUpload(file: RcFile, fileList:RcFile[]) {
       return new Promise((resolve, reject:(reason?: any) => void) => {
         fileList.forEach((item:RcFile) => {
           if (!['xls','xlsx'].includes(item.name.split(".")[item.name.split('.').length-1]) && values===1) {
-            message.error('上传类型为xls,xlsx')
+            message.error(formatMessage({id:"task.upalod.type"}))
             return reject(false)
           }
           if (!['csv'].includes(item.name.split(".")[item.name.split('.').length-1]) && values===2) {
-            message.error('离线文件上传类型为csv')
+            message.error(formatMessage({id:"task.csv.upalod.type"}))
             return reject(false)
           }
           if (item.size / 1024 / 1024 > 10) {
-            message.error('最大上传10M')
+            message.error(formatMessage({id:"task.upalod.size"}))
             return reject(false)
           }
           return resolve(true);
@@ -71,7 +72,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       })
     },
     onRemove(file: RcFile) {
-      console.log(file)
 
     },
     onChange(info:UploadChangeParam) {
@@ -98,7 +98,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title={values===1?"新建任务":"离线任务"}
+      title={values===1?formatMessage({id:"create"})+" "+formatMessage({id:"task"}):formatMessage({id:"outline"})+" "+formatMessage({id:"task"})}
       visible={modalVisible}
       onCancel={() => onCancel()}
       footer={null}
@@ -111,32 +111,32 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Form.Item
           {...formItemLayout}
           name="name"
-          label="任务名称"
+          label={formatMessage({id:"task.name"})}
           rules={[
             {
               required: true,
-              message: '请输入任务名称',
+              message: formatMessage({id:"task.input"}),
             },
             {
               max:20,
-              message: '任务名称不能大于20个字符',
+              message: formatMessage({id:"task.input.size"}),
             }
           ]}
         >
-          <Input placeholder="请输入任务名称" autocomplete="new-password" />
+          <Input placeholder={formatMessage({id:"task.input"})} autocomplete="new-password" />
         </Form.Item>
 
         <Form.Item
           name="password"
-          label="密码"
+          label={formatMessage({id:"login.password"})}
           rules={[
             {
               required: true,
-              message: '请输入任务密码',
+              message: formatMessage({id:"task.input.password"}),
             },
             {
               max:20,
-              message: '密码不能大于20个字符',
+              message: formatMessage({id:"task.password.size"}),
             }
           ]}
           hasFeedback
@@ -146,11 +146,11 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
         <Form.Item
           name="type"
-          label="业务类型"
+          label={formatMessage({id:"task.type"})}
           hasFeedback
-          rules={[{ required: true, message: '请选择业务类型' }]}
+          rules={[{ required: true, message: formatMessage({id:"task.input.type"}) }]}
         >
-          <Select placeholder="请选择业务类型">
+          <Select placeholder={formatMessage({id:"task.input.type"})}>
             {business.map(item => (
               <Option key={item.code} value={item.code}>{item.name}</Option>
             ))}
@@ -159,31 +159,31 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
         <Form.Item
           name="taskFileId"
-          label="文件"
+          label={formatMessage({id:"file"})}
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          extra={values===1?"支持扩展名 .xlsx, .xls":"支持扩展名 .csv"}
+          extra={values===1?formatMessage({id:"file.extend.name"}):formatMessage({id:"file.csv.extend.name"})}
           rules={[
             {
               required: true,
-              message: '请上传文件',
+              message: formatMessage({id:"file.upload.require"}),
             }
           ]}
         >
           <Upload  {...fileProps}>
             <Button>
-              <UploadOutlined /> 上传
+              <UploadOutlined /> {formatMessage({id:"upload"})}
             </Button>
           </Upload>
         </Form.Item>
 
         <Form.Item
           name="bz"
-          label="备注"
+          label={formatMessage({id:"remarks"})}
           rules={[
             {
               max:200,
-              message: '备注不能大于200个字符',
+              message: formatMessage({id:"remarks.size"}),
             }
           ]}
         >
@@ -192,7 +192,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
         <Form.Item wrapperCol={{ span: 12, offset: 6 }} >
           <Button type="primary" htmlType="submit" loading={check}>
-            保存
+            {formatMessage({id:"save"})}
           </Button>
         </Form.Item>
       </Form>

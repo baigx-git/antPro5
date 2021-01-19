@@ -3,7 +3,6 @@ import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons
 import { Avatar, Menu, Spin } from 'antd';
 import { history, useModel } from 'umi';
 import { getPageQuery } from '@/utils/utils';
-import { outLogin } from '@/services/login';
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -17,6 +16,7 @@ export interface GlobalHeaderRightProps {
  */
 const loginOut = async () => {
   //await outLogin();
+  localStorage.removeItem("Authorization")
   const { redirect } = getPageQuery();
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {

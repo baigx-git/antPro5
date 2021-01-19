@@ -10,7 +10,14 @@ export default {
   'common.batch.delete':'批量删除',
   'common.operator':'操作人',
   'common.operate.time':'操作时间',
-  'common.setting':'设置'
+  'common.setting':'设置',
+  'common.comfirm.delete':"确定删除吗?",
+  'common.comfirm.clean':"确定清理吗?",
+  'common.comfirm.recovery':"确定恢复吗?",
+  'autologin':"自动登录",
+  'reset.password':"重置密码",
+  "save":"保存"
+
 
 
 }
